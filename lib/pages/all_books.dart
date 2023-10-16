@@ -25,7 +25,7 @@ class AllBooks extends StatefulWidget {
 
 class _AllBooksState extends State<AllBooks> {
   late ConnectivityResult _connectivityResult = ConnectivityResult.none;
-  String host = CallApi().getHost();
+  String host = CallApi().getCover();
   var books = <Books2>[];
   List<PdfTile> files = [];
   bool reloaded = false;

@@ -6,32 +6,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CallApi {
   // DLCES RESOURCES
   final String _ckIpv4 = 'https://lms.smsaccess.net/';
+  final String _cover = 'https://hsa.cklms.ph/';
 
   //DLCES DOMAINS
-  // final String _domain = 'https://hsa.cklms.ph/api/'; - done
-  // final String _domain = 'https://ica.cklms.ph/api/'; - done
-  // final String _domain = 'https://saa.cklms.ph/api/'; - done
-  // final String _domain = 'https://sja.cklms.ph/api/'; - done
-  final String _domain = 'https://sjid.cklms.ph/api/';
-  // final String _domain = 'https://sjhs.cklms.ph/api/'; - done
-  // final String _domain = 'https://sla.cklms.ph/api/'; - done
-  // final String _domain = 'https://saa-bacarra.cklms.ph/api/'; - done
-  // final String _domain = 'https://sags.cklms.ph/api/';  - done
-  // final String _domain = 'https://sjohs.cklms.ph/api/'; - done
-  // final String _domain = 'https://sna.cklms.ph/api/'; - done
-  // final String _domain = 'https://sra.cklms.ph/api/'; - done
-  // final String _domain = 'https://sjec.cklms.ph/api/'; - done
-  // final String _domain = 'https://sgs.cklms.ph/api/'; - done
-  // final String _domain = 'https://ses.cklms.ph/api/'; - done
-
-  // LDCU DOMAIN
-  // final String _ckIpv4 = 'https://app.cklms.ph/'; - done
-  // final String _domain = 'https://app.cklms.ph/api/';
+  final String _domain = 'https://hsa.cklms.ph/api/';
+  // final String _domain = 'https://ica.cklms.ph/api/';
+  // final String _domain = 'https://saa.cklms.ph/api/';
+  // final String _domain = 'https://sja.cklms.ph/api/';
+  // final String _domain = 'https://sjid.cklms.ph/api/';
+  // final String _domain = 'https://sjhs.cklms.ph/api/';
+  // final String _domain = 'https://sla.cklms.ph/api/';
+  // final String _domain = 'https://saa-bacarra.cklms.ph/api/';
+  // final String _domain = 'https://sags.cklms.ph/api/';
+  // final String _domain = 'https://sjohs.cklms.ph/api/';
+  // final String _domain = 'https://sna.cklms.ph/api/';
+  // final String _domain = 'https://sra.cklms.ph/api/';
+  // final String _domain = 'https://sjec.cklms.ph/api/';
+  // final String _domain = 'https://sgs.cklms.ph/api/';
+  // final String _domain = 'https://ses.cklms.ph/api/';
 
   getHost() {
-    // var domain = await _loadSavedDomainName();
-    // return '$domain/';
     return _ckIpv4;
+  }
+
+  getCover() {
+    return _cover;
   }
 
   getDomain() {

@@ -31,6 +31,7 @@ class DetailBookPage extends StatefulWidget {
 class _DetailBookPageState extends State<DetailBookPage> {
   Color theme = AppUtil().schoolSecondary();
   String mainHost = CallApi().getHost();
+  String getCover = CallApi().getCover();
   double _diskSpace = 0;
   bool lowStorage = false;
   var parts = [];
@@ -48,6 +49,7 @@ class _DetailBookPageState extends State<DetailBookPage> {
   String pdfTitle = '';
   bool downloadEnabled = false;
   bool finished = false;
+  int itemdone = 0;
 
   checkIfBookExist() async {
     if (mounted) {
@@ -117,7 +119,7 @@ class _DetailBookPageState extends State<DetailBookPage> {
   }
 
   downloadImage(String foldr, String filename, String imgUrl) async {
-    String host = "$mainHost$imgUrl";
+    String host = "$getCover$imgUrl";
     var savePath = '$foldr$filename';
     // print(savePath);
     var dio = Dio();
@@ -131,16 +133,24 @@ class _DetailBookPageState extends State<DetailBookPage> {
           followRedirects: false,
           receiveTimeout: const Duration(seconds: 60),
         ),
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            EasyLoading.showProgress(received / total,
+                status: 'finishing up...');
+          }
+        },
       );
       var file = File(savePath);
       var raf = file.openSync(mode: FileMode.write);
       // response.data is List<int> type
       raf.writeFromSync(response.data);
       await raf.close();
-      // print("image dowloaded successfully");
+      print("Image downloaded successfully");
+      return true;
     } catch (e) {
       debugPrint(e.toString());
-      // print("image failed to download");
+      print("image failed to download");
+      return true;
     }
   }
 
@@ -194,7 +204,7 @@ class _DetailBookPageState extends State<DetailBookPage> {
       final Directory appDirFolder =
           Directory("${appDir.path}/${widget.bookInfo.title}/");
       bookNewFolder = await appDirFolder.create(recursive: true);
-      downloadImage(bookNewFolder.path, "cover_image", bookCoverUrl);
+      // downloadImage(bookNewFolder.path, "cover_image", bookCoverUrl);
 
       if (parts.isNotEmpty) {
         for (var part in parts) {
@@ -280,10 +290,13 @@ class _DetailBookPageState extends State<DetailBookPage> {
     if (mounted) {
       setState(() {
         finished = true;
+        downloadFutures.clear();
       });
     }
     saveCurrentBook(widget.bookInfo.title);
-    navigateToMainNav("${bookNewFolder.path}cover_image");
+    if (await downloadImage(bookNewFolder.path, "cover_image", bookCoverUrl)) {
+      navigateToMainNav("${bookNewFolder.path}cover_image");
+    }
   }
 
   navigateToMainNav(String path) {
@@ -330,19 +343,24 @@ class _DetailBookPageState extends State<DetailBookPage> {
         onReceiveProgress: (received, total) {
           if (total != -1) {
             setState(() {
-              if (pdfTitle != pdfInfo.title) {
-                pdfTitle = pdfInfo.title;
-              }
+              // if (pdfTitle != pdfInfo.title) {
+              //   pdfTitle = pdfInfo.title;
+              // }
               downloadProgress = received / total;
             });
           }
         },
       );
 
+      setState(() {
+        pdfTitle = "Progress for ${pdfInfo.title}";
+      });
+
       final file = File(savePath);
       await file.writeAsBytes(response.data);
 
       setState(() {
+        itemdone++;
         downloadProgress = 1.0; // Set progress to 100% after download
       });
     } catch (e) {
@@ -461,6 +479,9 @@ class _DetailBookPageState extends State<DetailBookPage> {
         if (mounted) {
           setState(() {
             existBook = false;
+            itemdone = 0;
+            downloadEnabled = false;
+            pdfDownloadList.clear();
           });
         }
         EasyLoading.showToast("Cleared successfully");
@@ -534,7 +555,7 @@ class _DetailBookPageState extends State<DetailBookPage> {
                           child: widget.bookInfo.picurl.isNotEmpty
                               ? CachedNetworkImage(
                                   imageUrl:
-                                      '$mainHost${widget.bookInfo.picurl}',
+                                      '$getCover${widget.bookInfo.picurl}',
                                   imageBuilder: (context, imageProvider) =>
                                       Container(
                                     height: 200,
@@ -697,11 +718,11 @@ class _DetailBookPageState extends State<DetailBookPage> {
                     Padding(
                       padding: const EdgeInsets.only(right: 0),
                       child: Text(
-                        'Presented by CK Children\'s Publishing, this book offers visual learning and integration for your benefit.'
+                        'An engaging and educational ICT eBook designed for young learners. This interactive eBook takes student on a journey into the world of technology and digital literacy, introducing key concepts and skills in a fun and accessible way.'
                             .toUpperCase(),
                         style: GoogleFonts.workSans(
                           color: Colors.black87,
-                          fontSize: 15,
+                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -709,13 +730,18 @@ class _DetailBookPageState extends State<DetailBookPage> {
                       height: 10,
                     ),
                     if (downloadEnabled) const Divider(),
-                    if (pdfTitle.isNotEmpty)
+                    if (downloadEnabled)
+                      Text(
+                        "Item done ${itemdone.toString()}/${pdfDownloadList.length}",
+                      ),
+                    const SizedBox(height: 5),
+                    if (pdfTitle.isNotEmpty && downloadEnabled)
                       SizedBox(
                         child: Text(
                           pdfTitle,
                           style: GoogleFonts.workSans(
                             textStyle: const TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               fontSize: 14,
                             ),
                           ),
@@ -725,6 +751,7 @@ class _DetailBookPageState extends State<DetailBookPage> {
                           textAlign: TextAlign.center,
                         ),
                       ),
+                    const SizedBox(height: 10),
                     if (downloadEnabled)
                       LinearPercentIndicator(
                         barRadius: const Radius.circular(10.0),

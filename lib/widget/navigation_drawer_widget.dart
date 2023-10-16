@@ -152,8 +152,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                     children: [
                       // if (constraints.maxWidth < 1000)
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 0)
-                            .add(safeArea),
+                        padding: const EdgeInsets.only(top: 15).add(safeArea),
                         width: double.infinity,
                         color: Colors.white12,
                         child: buildHeader(
@@ -384,7 +383,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   Widget buildHeader(bool isCollapsed, bool iscons) => isCollapsed
       ? Container(
-          padding: const EdgeInsets.only(bottom: 22, top: 0),
+          padding: const EdgeInsets.only(bottom: 15, top: 0),
           child: !iscons
               ? const CircleAvatar(
                   backgroundColor: Colors.white,
@@ -398,7 +397,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
               : null,
         )
       : Container(
-          padding: const EdgeInsets.only(bottom: 22, top: 0),
+          padding: const EdgeInsets.only(bottom: 15, top: 0),
           child: Row(
             children: [
               const SizedBox(width: 24),

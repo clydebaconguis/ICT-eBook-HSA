@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor_ns/flutter_statusbarcolor_ns.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AppUtil {
   schoolAbbv() {
-    return "SNABI";
+    return "HSA";
   }
 
   schoolPrimary() {
-    return const Color(0xFF05904A);
+    return const Color(0xFF7A110A);
   }
 
   schoolSecondary() {
@@ -17,11 +18,11 @@ class AppUtil {
   }
 
   schoolName() {
-    return "Sto. Niño Academy of Baroy, Inc.";
+    return "Holy Spirit Academy of Laoag";
   }
 
   schoolAddress() {
-    return "Baroy, Lanao del Norte, Baroy, Philippines";
+    return "Brgy. 14, Laoag City, Ilocos Norte";
   }
 
   readBooks() async {
@@ -62,5 +63,14 @@ class AppUtil {
     File file = File(url);
     String filename = file.path.split(Platform.pathSeparator).last;
     return filename;
+  }
+
+  changeStatusBarColor(Color color) async {
+    await FlutterStatusbarcolor.setStatusBarColor(color);
+    if (useWhiteForeground(color)) {
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
+    } else {
+      FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
+    }
   }
 }
